@@ -10,7 +10,6 @@ on:
 jobs:
   run-python-script:
     runs-on: ubuntu-latest
-    container: inseefrlab/onyxia-vscode-python:py3.12.7
 
     steps:
       - name: Checkout du dépôt
