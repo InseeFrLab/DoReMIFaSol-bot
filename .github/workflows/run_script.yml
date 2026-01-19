@@ -18,3 +18,7 @@ jobs:
 
       - name: Exécution du script Python
         run: python generer_json.py
+        env:
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
