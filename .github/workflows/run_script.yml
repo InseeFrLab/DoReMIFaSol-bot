@@ -10,10 +10,12 @@ on:
 jobs:
   run-python-script:
     runs-on: ubuntu-latest
+    container: inseefrlab/onyxia-vscode-python:py3.12.7
 
     steps:
       - name: Checkout du dépôt
-        uses: actions/checkout@v4
+        run: git clone https://github.com/InseeFrLab/DoReMIFaSol-bot.git |
+                cd DoReMIFaSol-bot
 
       - name: Exécution du script Python
         run: python generer_json.py
