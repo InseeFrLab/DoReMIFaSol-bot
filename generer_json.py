@@ -66,6 +66,9 @@ def telechargeProduit(url):
             print("Timeout. Nouvelle tentative dans 1 mn.")
             sleep(60)
             continue
+        except requests.exceptions.ChunkedEncodingError as e:
+            print(f"Erreur d'intégrité de données : {e}\n Nouvelle tentative...")
+            continue
 
 res_0 = [
     {
