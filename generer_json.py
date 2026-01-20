@@ -130,6 +130,7 @@ res = [
 for r in res:
     if r["url_documentation"] is None:
         del r["url_documentation"]
+    print(f"Téléchargement de {r['nom']}...")
     dl_produit = telechargeProduit(r["lien"])
     if r["zip"]:
         nomProduit = f"{r['nom']}.zip"
@@ -151,7 +152,7 @@ for r in res:
                 for fichier in liste_fichiers
                 if re.match(r".*metadata.*", fichier)
             ][0]
-            if not r["type"] in ["csv", "xls", "xlsx"]:
+            if r["type"] not in ["csv", "xls", "xlsx"]:
                 r["type"] = r["fichier_donnees"].split(".")[-1]
             if r["type"] == "csv":
                 r["separateur"] = ";"
