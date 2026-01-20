@@ -54,6 +54,13 @@ def telechargeProduit(url):
             dl_produit.raise_for_status()
             stop = True
             return dl_produit
+        except requests.exceptions.ChunkedEncodingError as e:
+            print(f"Erreur d'intégrité de données : {e}\n Nouvelle tentative...")
+            continue
+        except requests.exceptions.Timeout:
+            print("Timeout. Nouvelle tentative dans 1 mn.")
+            sleep(60)
+            continue
         except requests.exceptions.RequestException as e:
             print(f"Erreur lors du téléchargement : {e}")
             if dl_produit.status_code == 429:
@@ -62,13 +69,6 @@ def telechargeProduit(url):
             else:
                 return None
                 break
-        except requests.exceptions.Timeout:
-            print("Timeout. Nouvelle tentative dans 1 mn.")
-            sleep(60)
-            continue
-        except requests.exceptions.ChunkedEncodingError as e:
-            print(f"Erreur d'intégrité de données : {e}\n Nouvelle tentative...")
-            continue
 
 res_0 = [
     {
