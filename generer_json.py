@@ -55,7 +55,8 @@ def telechargeProduit(url):
             stop = True
             return dl_produit
         except requests.exceptions.ChunkedEncodingError as e:
-            print(f"Erreur d'intégrité de données : {e}\n Nouvelle tentative...")
+            print(f"Erreur d'intégrité de données : {e}\nNouvelle tentative...")
+            sleep(600)
             continue
         except requests.exceptions.Timeout:
             print("Timeout. Nouvelle tentative dans 1 mn.")
