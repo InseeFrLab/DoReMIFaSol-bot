@@ -91,10 +91,10 @@ res_0 = [
 for r in res_0:
     if r["url_documentation"] is None:
         del r["url_documentation"]
-    dl_item = requests.get(r["lien"], headers=headers)
+    dl_item = httpx.get(r["lien"], headers=headers)
     while dl_item.status_code == 429:
         sleep(30)
-        dl_item = requests.get(r["lien"], headers=headers)
+        dl_item = httpx.get(r["lien"], headers=headers)
     r["disponible"] = dl_item.status_code == 200
     if dl_item.status_code == 200:
         r["size"] = len(dl_item.content)
