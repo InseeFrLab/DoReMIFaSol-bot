@@ -46,17 +46,26 @@ def isZip(product):
     else:
         return False
 
-def telechargeProduit(url):
+def telechargeProduit(url, headers=None):
     stop = False
     while not stop:
         try:
-            dl_produit = requests.get(url, headers=headers)
-            dl_produit.raise_for_status()
+            with requests.get(url, headers=headers, stream=True) as response:
+                response.raise_for_status()
+                # Reconstitue le contenu
+                content = b"".join(response.iter_content(chunk_size=8192))
+                status_code = response.status_code
+                headers = response.headers
+            dl_produit = type('', (), {
+                'content': content,
+                'status_code': status_code,
+                'headers': headers,
+                })()
             stop = True
             return dl_produit
         except requests.exceptions.ChunkedEncodingError as e:
             print(f"Erreur d'intégrité de données : {e}\nNouvelle tentative...")
-            sleep(600)
+            sleep(120)
             continue
         except requests.exceptions.Timeout:
             print("Timeout. Nouvelle tentative dans 1 mn.")
@@ -64,7 +73,7 @@ def telechargeProduit(url):
             continue
         except requests.exceptions.RequestException as e:
             print(f"Erreur lors du téléchargement : {e}")
-            if dl_produit.status_code == 429:
+            if response.status_code == 429:
                 sleep(30)
                 continue
             else:
