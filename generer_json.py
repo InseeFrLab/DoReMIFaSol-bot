@@ -1,4 +1,4 @@
-import requests
+import httpx
 import json
 import os
 import s3fs
@@ -28,7 +28,7 @@ headers = {
 }
 
 try:
-    requete = requests.get(url)
+    requete = httpx.get(url)
     requete.raise_for_status()
     catalog = json.loads(requete.content)
 except Exception as e:
@@ -50,28 +50,15 @@ def telechargeProduit(url, headers=None):
     stop = False
     while not stop:
         try:
-            with requests.get(url, headers=headers, stream=True) as response:
-                response.raise_for_status()
-                # Reconstitue le contenu
-                content = b"".join(response.iter_content(chunk_size=8192))
-                status_code = response.status_code
-                headers = response.headers
-            dl_produit = type('', (), {
-                'content': content,
-                'status_code': status_code,
-                'headers': headers,
-                })()
+            response = httpx.get(url, headers=headers)
+            response.raise_for_status()
             stop = True
-            return dl_produit
-        except requests.exceptions.ChunkedEncodingError as e:
-            print(f"Erreur d'intégrité de données : {e}\nNouvelle tentative...")
-            sleep(1800)
-            continue
-        except requests.exceptions.Timeout:
+            return response
+        except httpx.TimeoutException:
             print("Timeout. Nouvelle tentative dans 1 mn.")
             sleep(60)
             continue
-        except requests.exceptions.RequestException as e:
+        except httpx.HTTPStatusError as e:
             print(f"Erreur lors du téléchargement : {e}")
             if response.status_code == 429:
                 sleep(30)
