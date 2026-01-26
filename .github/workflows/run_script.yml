@@ -3,8 +3,8 @@ name: Exécuter un script Python périodiquement
 on:
   push:
     branches: [main, master]
-  schedule:
-    - cron: '0 3 * * *'  
+#  schedule:
+#    - cron: '0 3 * * *'  
   workflow_dispatch: 
 
 jobs:
